@@ -8,7 +8,7 @@ import {
 } from '@nestjs/common';
 import { AuthService } from '../services/auth.service';
 import { RegisterDto } from '../dto/register.dto';
-import { Public } from '../../shared';
+import { Public } from '@app/shared';
 import { LoginDto } from '../dto/login.dto';
 
 @Public()

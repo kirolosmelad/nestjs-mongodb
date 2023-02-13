@@ -5,7 +5,7 @@ import { Model } from 'mongoose';
 import { JwtService } from '@nestjs/jwt';
 import { User, UserDocument } from '../entities/user.entity';
 import { RegisterDto } from '../dto/register.dto';
-import { JWTPayload } from 'src/shared';
+import { JWTPayload } from '@app/shared';
 import { LoginDto } from '../dto/login.dto';
 
 @Injectable()

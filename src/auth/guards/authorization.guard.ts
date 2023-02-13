@@ -6,7 +6,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { IS_PUBLIC_KEY, JWTPayload } from '../../shared';
+import { IS_PUBLIC_KEY, JWTPayload } from '@app/shared';
 import { AuthService } from '../services/auth.service';
 import { Reflector } from '@nestjs/core';
 

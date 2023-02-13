@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
 import * as bcrypt from 'bcrypt';
-import { Regex } from '../../shared';
+import { Regex } from '@app/shared';
 
 export type UserDocument = HydratedDocument<User>;
 
