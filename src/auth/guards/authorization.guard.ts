@@ -7,8 +7,8 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { IS_PUBLIC_KEY, JWTPayload } from '@app/shared';
-import { AuthService } from '../services/auth.service';
 import { Reflector } from '@nestjs/core';
+import { AuthService } from '../services/auth.service';
 
 @Injectable()
 export class AuthorizationGuard
@@ -30,7 +30,7 @@ export class AuthorizationGuard
     ]);
     if (isPublic) return true;
 
-    // Call JWT Strategy to validate user
+    // Validate user
     await super.canActivate(context);
 
     // Get User From Request (after decoding paylod from super class)
@@ -38,7 +38,7 @@ export class AuthorizationGuard
 
     // Check User Existence
     const user = await this.authService.checkUserExistence(payload.id);
-    if (!user) throw new UnauthorizedException();
+    if (!user || !user?.isEmailVerified) throw new UnauthorizedException();
 
     return true;
   }

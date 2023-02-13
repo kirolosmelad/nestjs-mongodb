@@ -6,6 +6,7 @@ import { User, UserSchema } from './entities/user.entity';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { JWTStrategy } from './strategies/jwt.strategy';
+import { AuthorizationGuard } from './guards/authorization.guard';
 
 @Module({
   imports: [
@@ -17,8 +18,8 @@ import { JWTStrategy } from './strategies/jwt.strategy';
       }),
     }),
   ],
-  providers: [AuthService, JWTStrategy],
+  providers: [AuthService, JWTStrategy, AuthorizationGuard],
   controllers: [AuthController],
-  exports: [],
+  exports: [AuthorizationGuard, AuthService],
 })
 export class AuthModule {}

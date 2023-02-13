@@ -58,5 +58,4 @@ export class AuthService {
       email: paylod.email,
     });
   }
-  //#endregion
 }
