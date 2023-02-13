@@ -5,13 +5,14 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
+import { JWTPayload, SetNewPasswordDto } from '@app/shared';
 import * as bcrypt from 'bcrypt';
 import { FilterQuery, Model } from 'mongoose';
 import { JwtService } from '@nestjs/jwt';
 import { User, UserDocument } from '@app/shared';
 import { RegisterDto } from '../dto/register.dto';
-import { JWTPayload } from '@app/shared';
 import { LoginDto } from '../dto/login.dto';
+import { GetForgetPasswordTokenDto } from '../dto/get-forget-password-token';
 
 @Injectable()
 export class AuthService {
@@ -25,11 +26,6 @@ export class AuthService {
     registerDto: RegisterDto,
   ): Promise<{ user: UserDocument; token: string }> {
     const user: UserDocument = await new this.userModel(registerDto).save();
-
-    // Delete Password
-    user.password = undefined;
-    // Remove Verification Code
-    user.verificationCode = undefined;
 
     // Assign Token
     const token = this.assignTokenToUser(user);
@@ -50,9 +46,6 @@ export class AuthService {
       .select('+password');
     if (!user || !(await bcrypt.compare(loginDto.password, user.password)))
       throw new BadRequestException('Invalid email or password');
-
-    // Delete Password
-    user.password = undefined;
 
     // Assign Tokens
     const token = this.assignTokenToUser(user);
@@ -92,9 +85,64 @@ export class AuthService {
   }
   //#endregion
 
+  //#region Get Forget Password Token
+  async getForgetPasswordToken(
+    getForgetPasswordTokenDto: GetForgetPasswordTokenDto,
+  ) {
+    // Check User Existence
+    const user = await this.checkUserExistence({
+      email: getForgetPasswordTokenDto.email,
+    });
+    if (!user)
+      throw new BadRequestException('Wrong email , please signup first');
+
+    // Update Set Password Token
+    user.setPasswordToken = this.generateSetPasswordToken(user.id);
+
+    // TODO : Send Email With token
+
+    return user.save();
+  }
+  //#endregion
+
+  //#region Verify Token
+  verifySetPasswordToken(token: string): { id: string } {
+    return this.jwtService.verify(token);
+  }
+  //#endregion
+
+  //#region Set New Password
+  async setNewPassword(
+    setNewPasswordDto: SetNewPasswordDto,
+  ): Promise<UserDocument> {
+    // Verify Token
+    const userId = this.verifySetPasswordToken(setNewPasswordDto.token).id;
+
+    // Check User Existence
+    const user = await this.checkUserExistence({
+      id: userId,
+      setPasswordToken: setNewPasswordDto.token,
+    });
+    if (!user)
+      throw new BadRequestException('Wrong email , please signup first');
+
+    // Update Password and remove set password token
+    user.password = setNewPasswordDto.password;
+    user.setPasswordToken = undefined;
+
+    return user.save();
+  }
+  //#endregion
+
   //#region Check User Existence
   async checkUserExistence(filters: FilterQuery<User>): Promise<UserDocument> {
     return await this.userModel.findOne(filters);
+  }
+  //#endregion
+
+  //#region Generate Set Password Token
+  public generateSetPasswordToken(userId: string) {
+    return this.jwtService.sign({ id: userId }, { expiresIn: '1h' });
   }
   //#endregion
 

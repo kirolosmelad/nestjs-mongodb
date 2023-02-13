@@ -5,6 +5,7 @@ import {
   HttpCode,
   HttpStatus,
   Inject,
+  Param,
   Post,
 } from '@nestjs/common';
 import { AuthService } from '../services/auth.service';
@@ -14,9 +15,11 @@ import {
   JWTPayload,
   Public,
   SkipEmailVerification,
+  VerifyEmailDto,
+  SetNewPasswordDto,
 } from '@app/shared';
 import { LoginDto } from '../dto/login.dto';
-import { VerifyEmailDto } from '../dto/verify-email.dto';
+import { GetForgetPasswordTokenDto } from '../dto/get-forget-password-token';
 
 @SkipEmailVerification()
 @Controller('/auth')
@@ -28,6 +31,11 @@ export class AuthController {
   @Post('/register')
   async register(@Body() registerDto: RegisterDto) {
     const data = await this.authService.register(registerDto);
+
+    // Delete Password
+    data.user.password = undefined;
+    // Remove Verification Code
+    data.user.verificationCode = undefined;
 
     return {
       message: `Verification code is sent to ${data.user.email}`,
@@ -41,7 +49,12 @@ export class AuthController {
   @Post('/login')
   @HttpCode(HttpStatus.OK)
   async login(@Body() loginDto: LoginDto) {
-    return this.authService.login(loginDto);
+    const data = await this.authService.login(loginDto);
+
+    // Delete Password
+    data.user.password = undefined;
+
+    return data;
   }
   //#endregion
 
@@ -72,6 +85,46 @@ export class AuthController {
     return {
       message: `Verification code is re-sent to ${email}`,
     };
+  }
+  //#endregion
+
+  //#region Forget Password token
+  @Public()
+  @Post('/forget-password')
+  @HttpCode(HttpStatus.OK)
+  async forgetPasswordToken(
+    @Body() getForgetPasswordTokenDto: GetForgetPasswordTokenDto,
+  ) {
+    await this.authService.getForgetPasswordToken(getForgetPasswordTokenDto);
+
+    return {
+      message: `Reset password link has been sent to your email`,
+    };
+  }
+  //#endregion
+
+  //#region Verify Set Password token
+  @Public()
+  @Get('/forget-password/verify/:token')
+  async verifySetPasswordToken(@Param('token') token: string) {
+    this.authService.verifySetPasswordToken(token);
+
+    return {
+      isValid: true,
+    };
+  }
+  //#endregion
+
+  //#region Set new Password
+  @Public()
+  @Post('/set-password')
+  async setNewPassword(@Body() setNewPasswordDto: SetNewPasswordDto) {
+    const user = await this.authService.setNewPassword(setNewPasswordDto);
+
+    // remove password
+    user.password = undefined;
+
+    return user;
   }
   //#endregion
 }
