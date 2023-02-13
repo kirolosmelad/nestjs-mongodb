@@ -6,7 +6,11 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { IS_PUBLIC_KEY, JWTPayload } from '@app/shared';
+import {
+  IS_PUBLIC_KEY,
+  JWTPayload,
+  SKIP_EMAIL_VERIFICATION,
+} from '@app/shared';
 import { Reflector } from '@nestjs/core';
 import { AuthService } from '../services/auth.service';
 
@@ -37,8 +41,17 @@ export class AuthorizationGuard
     const payload = context.switchToHttp().getRequest()?.user as JWTPayload;
 
     // Check User Existence
-    const user = await this.authService.checkUserExistence(payload.id);
-    if (!user || !user?.isEmailVerified) throw new UnauthorizedException();
+    const user = await this.authService.checkUserExistence({ id: payload.id });
+    if (!user) throw new UnauthorizedException();
+
+    // Add Some data to our payload
+    payload.verificationCode = user.verificationCode;
+
+    const skipEmailVerification = this.reflector.getAllAndOverride<boolean>(
+      SKIP_EMAIL_VERIFICATION,
+      [context.getHandler(), context.getClass()],
+    );
+    if (!skipEmailVerification && !user?.isEmailVerified) return false;
 
     return true;
   }

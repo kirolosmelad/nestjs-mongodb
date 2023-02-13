@@ -3,4 +3,5 @@ export interface JWTPayload {
   firstName: string;
   lastName: string;
   email: string;
+  verificationCode?: string;
 }
