@@ -114,23 +114,26 @@ export class AuthService {
   //#region Set New Password
   async setNewPassword(
     setNewPasswordDto: SetNewPasswordDto,
-  ): Promise<UserDocument> {
+  ): Promise<{ user: UserDocument; token: string }> {
     // Verify Token
     const userId = this.verifySetPasswordToken(setNewPasswordDto.token).id;
 
     // Check User Existence
-    const user = await this.checkUserExistence({
+    let user = await this.checkUserExistence({
       id: userId,
       setPasswordToken: setNewPasswordDto.token,
     });
-    if (!user)
-      throw new BadRequestException('Wrong email , please signup first');
+    if (!user) throw new BadRequestException('Invalid link');
 
     // Update Password and remove set password token
     user.password = setNewPasswordDto.password;
     user.setPasswordToken = undefined;
 
-    return user.save();
+    // Generate Access Token
+    const token = this.assignTokenToUser(user);
+
+    user = await user.save();
+    return { user, token };
   }
   //#endregion
 

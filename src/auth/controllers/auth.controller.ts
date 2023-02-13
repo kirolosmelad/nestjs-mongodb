@@ -83,7 +83,7 @@ export class AuthController {
     const { email } = await this.authService.resendVerificationCode(user.id);
 
     return {
-      message: `Verification code is re-sent to ${email}`,
+      message: `Verification code has been re-sent to ${email}`,
     };
   }
   //#endregion
@@ -119,12 +119,12 @@ export class AuthController {
   @Public()
   @Post('/set-password')
   async setNewPassword(@Body() setNewPasswordDto: SetNewPasswordDto) {
-    const user = await this.authService.setNewPassword(setNewPasswordDto);
+    const data = await this.authService.setNewPassword(setNewPasswordDto);
 
     // remove password
-    user.password = undefined;
+    data.user.password = undefined;
 
-    return user;
+    return data;
   }
   //#endregion
 }
