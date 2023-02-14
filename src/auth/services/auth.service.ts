@@ -57,11 +57,14 @@ export class AuthService {
   //#region Verify Email
   async verifyEmail(userId: string, code: string): Promise<UserDocument> {
     // Check User Existence & code
-    const user = await this.checkUserExistence({
-      id: userId,
-      verificationCode: code,
-    });
-    if (!user) throw new BadRequestException('Invalid verification code');
+    const user = await this.userModel
+      .findOne({ _id: userId })
+      .select('+verificationCode');
+
+    if (!user || (user.verificationCode && user.verificationCode !== code))
+      throw new BadRequestException('Invalid verification code');
+    if (user.isEmailVerified)
+      throw new BadRequestException('Your email is already verified');
 
     // Verify Email in database
     user.isEmailVerified = true;
@@ -73,7 +76,7 @@ export class AuthService {
   //#region Re-Send Email Verification Code
   async resendVerificationCode(userId: string): Promise<UserDocument> {
     const user = await this.userModel
-      .findOne({ id: userId })
+      .findOne({ _id: userId })
       .select('+verificationCode');
     if (!user) throw new NotFoundException('User is not exist');
     if (user.isEmailVerified)
@@ -106,8 +109,17 @@ export class AuthService {
   //#endregion
 
   //#region Verify Token
-  verifySetPasswordToken(token: string): { id: string } {
-    return this.jwtService.verify(token);
+  async verifySetPasswordToken(token: string): Promise<UserDocument> {
+    const userId: string = this.jwtService.verify(token).id;
+
+    // Check User Existence
+    const user = await this.checkUserExistence({
+      _id: userId,
+      setPasswordToken: token,
+    });
+    if (!user) throw new BadRequestException('Invalid link');
+
+    return user;
   }
   //#endregion
 
@@ -116,14 +128,7 @@ export class AuthService {
     setNewPasswordDto: SetNewPasswordDto,
   ): Promise<{ user: UserDocument; token: string }> {
     // Verify Token
-    const userId = this.verifySetPasswordToken(setNewPasswordDto.token).id;
-
-    // Check User Existence
-    let user = await this.checkUserExistence({
-      id: userId,
-      setPasswordToken: setNewPasswordDto.token,
-    });
-    if (!user) throw new BadRequestException('Invalid link');
+    let user = await this.verifySetPasswordToken(setNewPasswordDto.token);
 
     // Update Password and remove set password token
     user.password = setNewPasswordDto.password;

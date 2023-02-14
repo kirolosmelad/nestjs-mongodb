@@ -3,8 +3,8 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigValidationSchema } from './config.schema';
 import { AuthModule } from './auth/auth.module';
-import { APP_GUARD, APP_PIPE } from '@nestjs/core';
-import { SharedModule } from '@app/shared';
+import { APP_FILTER, APP_GUARD, APP_PIPE } from '@nestjs/core';
+import { ExceptionFilter, SharedModule } from '@app/shared';
 import { AuthorizationGuard } from './auth/guards';
 
 @Module({
@@ -33,6 +33,10 @@ import { AuthorizationGuard } from './auth/guards';
     {
       provide: APP_GUARD,
       useClass: AuthorizationGuard,
+    },
+    {
+      provide: APP_FILTER,
+      useClass: ExceptionFilter,
     },
   ],
 })

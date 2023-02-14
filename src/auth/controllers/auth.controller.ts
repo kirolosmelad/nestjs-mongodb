@@ -107,7 +107,7 @@ export class AuthController {
   @Public()
   @Get('/forget-password/verify/:token')
   async verifySetPasswordToken(@Param('token') token: string) {
-    this.authService.verifySetPasswordToken(token);
+    await this.authService.verifySetPasswordToken(token);
 
     return {
       isValid: true,
