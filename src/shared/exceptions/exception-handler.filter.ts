@@ -38,6 +38,8 @@ export class ExceptionFilter implements ExceptionFilter {
       exceptionReponse = this.handleJWTException(exception, req);
     }
 
+    console.log(exception);
+
     return this.sendErrorBackToClient(exceptionReponse, res);
   }
 

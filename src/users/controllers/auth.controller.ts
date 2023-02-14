@@ -44,20 +44,6 @@ export class AuthController {
   }
   //#endregion
 
-  //#region Login
-  @Public()
-  @Post('/login')
-  @HttpCode(HttpStatus.OK)
-  async login(@Body() loginDto: LoginDto) {
-    const data = await this.authService.login(loginDto);
-
-    // Delete Password
-    data.user.password = undefined;
-
-    return data;
-  }
-  //#endregion
-
   //#region Verify Email
   @Post('/verify-email')
   @HttpCode(HttpStatus.OK)
@@ -80,11 +66,26 @@ export class AuthController {
   //#region Re-send Verification Code
   @Get('/verification-code/resend')
   async resendVerificationCode(@GetUser() user: JWTPayload) {
-    const { email } = await this.authService.resendVerificationCode(user.id);
+    const data = await this.authService.resendVerificationCode(user.id);
 
     return {
-      message: `Verification code has been re-sent to ${email}`,
+      message: `Verification code has been re-sent to ${data.user.email}`,
+      emailLink: data.emailLink,
     };
+  }
+  //#endregion
+
+  //#region Login
+  @Public()
+  @Post('/login')
+  @HttpCode(HttpStatus.OK)
+  async login(@Body() loginDto: LoginDto) {
+    const data = await this.authService.login(loginDto);
+
+    // Delete Password
+    data.user.password = undefined;
+
+    return data;
   }
   //#endregion
 

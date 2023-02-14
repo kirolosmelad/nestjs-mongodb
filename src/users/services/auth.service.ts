@@ -14,42 +14,33 @@ import { LoginDto } from '../dto/login.dto';
 import { GetForgetPasswordTokenDto } from '../dto/get-forget-password-token';
 import { User, UserDocument } from '../entities';
 import { SetNewPasswordDto } from '../dto/set-new-password.dto';
+import { EmailsService } from 'src/notifications/services/emails.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     @InjectModel(User.name) private userModel: Model<UserDocument>,
     @Inject(JwtService) private jwtService: JwtService,
+    @Inject(EmailsService) private emailsService: EmailsService,
   ) {}
 
   //#region Register New User
   async register(
     registerDto: RegisterDto,
-  ): Promise<{ user: UserDocument; token: string }> {
+  ): Promise<{ user: UserDocument; token: string; emailLink: string }> {
     const user: UserDocument = await new this.userModel(registerDto).save();
 
     // Assign Token
     const token = this.assignTokenToUser(user);
 
-    return { user, token };
-  }
-  //#endregion
+    // Send Email
+    const emailLink = await this.emailsService.sendVerificationCode({
+      code: user.verificationCode,
+      email: user.email,
+      name: `${user.firstName} ${user.lastName}`,
+    });
 
-  //#region Login
-  async login(
-    loginDto: LoginDto,
-  ): Promise<{ user: UserDocument; token: string }> {
-    // Check User Existence
-    const user = await this.userModel
-      .findOne({ email: loginDto.email })
-      .select('+password');
-    if (!user || !(await bcrypt.compare(loginDto.password, user.password)))
-      throw new BadRequestException('Invalid email or password');
-
-    // Assign Tokens
-    const token = this.assignTokenToUser(user);
-
-    return { user, token };
+    return { user, token, emailLink };
   }
   //#endregion
 
@@ -73,7 +64,9 @@ export class AuthService {
   //#endregion
 
   //#region Re-Send Email Verification Code
-  async resendVerificationCode(userId: string): Promise<UserDocument> {
+  async resendVerificationCode(
+    userId: string,
+  ): Promise<{ user: UserDocument; emailLink: string }> {
     const user = await this.userModel
       .findOne({ _id: userId })
       .select('+verificationCode');
@@ -81,9 +74,32 @@ export class AuthService {
     if (user.isEmailVerified)
       throw new BadRequestException('User email is already verified');
 
-    // TODO : Send Code in Email
+    // Send Email
+    const emailLink = await this.emailsService.sendVerificationCode({
+      code: user.verificationCode,
+      email: user.email,
+      name: `${user.firstName} ${user.lastName}`,
+    });
 
-    return user;
+    return { user, emailLink };
+  }
+  //#endregion
+
+  //#region Login
+  async login(
+    loginDto: LoginDto,
+  ): Promise<{ user: UserDocument; token: string }> {
+    // Check User Existence
+    const user = await this.userModel
+      .findOne({ email: loginDto.email })
+      .select('+password');
+    if (!user || !(await bcrypt.compare(loginDto.password, user.password)))
+      throw new BadRequestException('Invalid email or password');
+
+    // Assign Tokens
+    const token = this.assignTokenToUser(user);
+
+    return { user, token };
   }
   //#endregion
 
