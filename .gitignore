@@ -2,6 +2,9 @@
 /dist
 
 
+#ENV
+.env
+
 # Logs
 logs
 *.log
