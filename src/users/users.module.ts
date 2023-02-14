@@ -9,6 +9,8 @@ import { AccountController } from './controllers/account.controller';
 import { AccountService } from './services/account.service';
 import { NotificationsModule } from '../notifications/notifications.module';
 import { SharedModule } from '@app/shared';
+import { AddressesModule } from '../addresses/addresses.module';
+import { AddressesService } from '../addresses/services/addresses.service';
 
 @Module({
   imports: [
@@ -20,8 +22,15 @@ import { SharedModule } from '@app/shared';
     }),
     NotificationsModule,
     SharedModule,
+    AddressesModule,
   ],
-  providers: [AuthService, JWTStrategy, AuthorizationGuard, AccountService],
+  providers: [
+    AuthService,
+    JWTStrategy,
+    AuthorizationGuard,
+    AccountService,
+    AddressesService,
+  ],
   controllers: [AuthController, AccountController],
   exports: [AuthorizationGuard, AuthService],
 })

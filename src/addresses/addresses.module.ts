@@ -12,5 +12,6 @@ import { SharedModule } from '@app/shared';
   ],
   controllers: [AddressesController],
   providers: [AddressesService],
+  exports: [AddressesService, MongooseModule],
 })
 export class AddressesModule {}

@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Address, AddressDocument } from '../entities/address.entity';
-import { Model } from 'mongoose';
+import { ClientSession, Model } from 'mongoose';
 import { CreateAddressDto } from '../dto/create-address.dto';
 import { User, UserDocument } from '@app/shared';
 import { UpdateAddressDto } from '../dto/update-address.dto';
@@ -75,6 +75,12 @@ export class AddressesService {
     if (!address) throw new NotFoundException('Address is not exist');
 
     return address;
+  }
+  //#endregion
+
+  //#region Delete All User Addresses
+  async deleteUserAddresses(userId: string, session: ClientSession) {
+    await this.addressModel.deleteMany({ user: userId }, { session });
   }
   //#endregion
 }

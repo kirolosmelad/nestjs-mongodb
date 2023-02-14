@@ -2,16 +2,19 @@ import { JWTPayload, User, UserDocument } from '@app/shared';
 import { Inject, Injectable } from '@nestjs/common';
 import { UpdateProfileDto } from '../dto/update-profile.dto';
 import { AuthService } from './auth.service';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { InjectConnection, InjectModel } from '@nestjs/mongoose';
+import { Connection, Model } from 'mongoose';
 import { EmailsService } from '../../notifications/services/emails.service';
+import { AddressesService } from '../../addresses/services/addresses.service';
 
 @Injectable()
 export class AccountService {
   constructor(
     @Inject(AuthService) private authService: AuthService,
     @Inject(EmailsService) private emailsService: EmailsService,
+    @Inject(AddressesService) private addressesService: AddressesService,
     @InjectModel(User.name) private userModel: Model<UserDocument>,
+    @InjectConnection() private connnection: Connection,
   ) {}
 
   //#region Get Updated Data
@@ -63,6 +66,16 @@ export class AccountService {
     });
 
     return emailLink;
+  }
+  //#endregion
+
+  //#region Delete Account
+  async deleteAccount(userId: string) {
+    const session = await this.connnection.startSession();
+    await session.withTransaction(async () => {
+      await this.userModel.deleteOne({ _id: userId }, { session });
+      await this.addressesService.deleteUserAddresses(userId, session);
+    });
   }
   //#endregion
 }

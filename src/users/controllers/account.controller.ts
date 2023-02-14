@@ -1,4 +1,13 @@
-import { Body, Controller, Get, Inject, Patch } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Inject,
+  Patch,
+} from '@nestjs/common';
 import { GetUser, JWTPayload, SkipEmailVerification } from '@app/shared';
 import { AccountService } from '../services/account.service';
 import { UpdateProfileDto } from '../dto/update-profile.dto';
@@ -41,6 +50,14 @@ export class AccountController {
     const emailLink = await this.accountService.sendChangePasswordLink(user);
 
     return { emailLink };
+  }
+  //#endregion
+
+  //#region Delete My Account
+  @Delete('/')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async deleteAccount(@GetUser() user: JWTPayload) {
+    return await this.accountService.deleteAccount(user.id);
   }
   //#endregion
 }
