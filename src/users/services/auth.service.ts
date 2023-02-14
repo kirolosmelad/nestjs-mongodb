@@ -70,6 +70,7 @@ export class AuthService {
     const user = await this.userModel
       .findOne({ _id: userId })
       .select('+verificationCode');
+
     if (!user) throw new NotFoundException('User is not exist');
     if (user.isEmailVerified)
       throw new BadRequestException('User email is already verified');
@@ -93,6 +94,7 @@ export class AuthService {
     const user = await this.userModel
       .findOne({ email: loginDto.email })
       .select('+password');
+
     if (!user || !(await bcrypt.compare(loginDto.password, user.password)))
       throw new BadRequestException('Invalid email or password');
 

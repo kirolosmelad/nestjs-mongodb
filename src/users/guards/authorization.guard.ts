@@ -45,7 +45,6 @@ export class AuthorizationGuard
     if (!user) throw new UnauthorizedException();
 
     // Inject User Data in paylod
-    payload.verificationCode = user.verificationCode;
     payload.isEmailVerified = user.isEmailVerified;
 
     const skipEmailVerification = this.reflector.getAllAndOverride<boolean>(
