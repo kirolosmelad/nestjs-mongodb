@@ -18,7 +18,9 @@ import { AuthorizationGuard } from './auth/guards/authorization.guard';
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: async (configService: ConfigService) => ({
-        uri: configService.get<string>('MONGODB_URI'),
+        uri: configService
+          .get<string>('MONGODB_URI')
+          .replace('<PASSWORD>', configService.get<string>('MONGODB_PASSWORD')),
       }),
     }),
     AuthModule,
