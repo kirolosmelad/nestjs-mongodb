@@ -14,8 +14,6 @@ import {
   JWTPayload,
   Public,
   SkipEmailVerification,
-  successHTML,
-  failureHTML,
 } from '@app/shared';
 import { Response } from 'express';
 import { AuthService } from '../services/auth.service';
@@ -24,6 +22,7 @@ import { LoginDto } from '../dto/login.dto';
 import { GetForgetPasswordTokenDto } from '../dto/get-forget-password-token';
 import { VerifyEmailDto } from '../dto/verify-email.dto';
 import { SetNewPasswordDto } from '../dto/set-new-password.dto';
+import { failureHTML, successHTML } from '../templates';
 
 @SkipEmailVerification()
 @Controller('users/auth')

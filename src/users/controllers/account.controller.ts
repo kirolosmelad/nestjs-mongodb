@@ -34,4 +34,13 @@ export class AccountController {
     };
   }
   //#endregion
+
+  //#region Get Change Password Token
+  @Get('/change-password-token')
+  async getChangePasswordToken(@GetUser() user: JWTPayload) {
+    const emailLink = await this.accountService.sendChangePasswordLink(user);
+
+    return { emailLink };
+  }
+  //#endregion
 }

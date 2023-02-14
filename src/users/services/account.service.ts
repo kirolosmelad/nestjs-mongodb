@@ -17,7 +17,8 @@ export class AccountService {
 
   //#region Get Updated Data
   async getUpdatedData(user: JWTPayload): Promise<JWTPayload> {
-    user.iat = undefined;
+    user['iat'] = undefined;
+    user['exp'] = undefined;
     return user;
   }
   //#endregion
@@ -44,6 +45,25 @@ export class AccountService {
 
       return { emailLink };
     }
+  }
+  //#endregion
+
+  //#region Request change password
+  async sendChangePasswordLink(user: JWTPayload): Promise<string> {
+    // Update Set Password Token
+    const setPasswordToken = this.authService.generateSetPasswordToken(user.id);
+    await this.userModel.updateOne(
+      { _id: user.id },
+      { $set: { setPasswordToken } },
+    );
+
+    // Send Email
+    const emailLink = await this.emailsService.sendResetPasswordEmail({
+      email: user.email,
+      token: setPasswordToken,
+    });
+
+    return emailLink;
   }
   //#endregion
 }

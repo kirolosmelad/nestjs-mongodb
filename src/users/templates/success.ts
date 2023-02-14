@@ -47,7 +47,7 @@ export const successHTML = `<html>
             <i class="fa fa-check-circle" aria-hidden="true"></i>
             <h2>Your link is valid 🚀</h2>
             <p>
-              Please continue using postman (APIs) because its only backend
+              Please continue using postman (Users -> Auth -> Set New Password API) because its only backend
               application ❤️
             </p>
           </div>

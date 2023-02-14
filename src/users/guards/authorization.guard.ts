@@ -41,11 +41,14 @@ export class AuthorizationGuard
     const payload = context.switchToHttp().getRequest()?.user as JWTPayload;
 
     // Check User Existence
-    const user = await this.authService.checkUserExistence({ id: payload.id });
+    const user = await this.authService.checkUserExistence({ _id: payload.id });
     if (!user) throw new UnauthorizedException();
 
     // Inject User Data in paylod
     payload.isEmailVerified = user.isEmailVerified;
+    payload.firstName = user.firstName;
+    payload.lastName = user.lastName;
+    payload.email = user.email;
 
     const skipEmailVerification = this.reflector.getAllAndOverride<boolean>(
       SKIP_EMAIL_VERIFICATION,
