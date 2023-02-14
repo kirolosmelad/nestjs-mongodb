@@ -6,6 +6,7 @@ import { UsersModule } from './users/users.module';
 import { APP_FILTER, APP_GUARD, APP_PIPE } from '@nestjs/core';
 import { ExceptionFilter, SharedModule } from '@app/shared';
 import { AuthorizationGuard } from './users/guards/authorization.guard';
+import { NotificationsModule } from './notifications/notifications.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { AuthorizationGuard } from './users/guards/authorization.guard';
     }),
     UsersModule,
     SharedModule,
+    NotificationsModule,
   ],
   controllers: [],
   providers: [

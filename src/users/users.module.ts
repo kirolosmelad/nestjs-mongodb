@@ -8,6 +8,7 @@ import { JWTStrategy } from './strategies/jwt.strategy';
 import { AuthorizationGuard } from './guards/authorization.guard';
 import { AccountController } from './controllers/account.controller';
 import { AccountService } from './services/account.service';
+import { NotificationsModule } from '../notifications/notifications.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { AccountService } from './services/account.service';
       }),
     }),
     SharedModule,
+    NotificationsModule,
   ],
   providers: [AuthService, JWTStrategy, AuthorizationGuard, AccountService],
   controllers: [AuthController, AccountController],

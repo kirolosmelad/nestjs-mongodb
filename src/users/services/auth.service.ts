@@ -31,8 +31,6 @@ export class AuthService {
     // Assign Token
     const token = this.assignTokenToUser(user);
 
-    // TODO : Send Email With new Code
-
     return { user, token };
   }
   //#endregion
