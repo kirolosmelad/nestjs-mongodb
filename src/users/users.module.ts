@@ -23,4 +23,4 @@ import { AccountService } from './services/account.service';
   controllers: [AuthController, AccountController],
   exports: [AuthorizationGuard, AuthService],
 })
-export class AuthModule {}
+export class UsersModule {}

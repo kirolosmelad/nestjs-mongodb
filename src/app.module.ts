@@ -2,10 +2,10 @@ import { Module, ValidationPipe } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigValidationSchema } from './config.schema';
-import { AuthModule } from './auth/auth.module';
+import { UsersModule } from './users/users.module';
 import { APP_FILTER, APP_GUARD, APP_PIPE } from '@nestjs/core';
 import { ExceptionFilter, SharedModule } from '@app/shared';
-import { AuthorizationGuard } from './auth/guards/authorization.guard';
+import { AuthorizationGuard } from './users/guards/authorization.guard';
 
 @Module({
   imports: [
@@ -23,7 +23,7 @@ import { AuthorizationGuard } from './auth/guards/authorization.guard';
           .replace('<PASSWORD>', configService.get<string>('MONGODB_PASSWORD')),
       }),
     }),
-    AuthModule,
+    UsersModule,
     SharedModule,
   ],
   controllers: [],

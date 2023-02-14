@@ -1,8 +1,8 @@
 import { Controller, Get, Inject } from '@nestjs/common';
-import { AccountService } from '../services/account.service';
 import { GetUser, JWTPayload, SkipEmailVerification } from '@app/shared';
+import { AccountService } from '../services/account.service';
 
-@Controller('auth/account')
+@Controller('users/account')
 export class AccountController {
   constructor(@Inject(AccountService) private accountService: AccountService) {}
 

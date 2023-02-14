@@ -13,16 +13,16 @@ import {
   JWTPayload,
   Public,
   SkipEmailVerification,
-  VerifyEmailDto,
-  SetNewPasswordDto,
 } from '@app/shared';
 import { AuthService } from '../services/auth.service';
 import { RegisterDto } from '../dto/register.dto';
 import { LoginDto } from '../dto/login.dto';
 import { GetForgetPasswordTokenDto } from '../dto/get-forget-password-token';
+import { VerifyEmailDto } from '../dto/verify-email.dto';
+import { SetNewPasswordDto } from '../dto/set-new-password.dto';
 
 @SkipEmailVerification()
-@Controller('/auth')
+@Controller('users/auth')
 export class AuthController {
   constructor(@Inject(AuthService) private authService: AuthService) {}
 

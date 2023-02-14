@@ -29,7 +29,9 @@ export class ExceptionFilter implements ExceptionFilter {
       exceptionReponse = this.handleHttpException(exception);
     } else if (exception['name'] === 'MongoServerError') {
       exceptionReponse = this.handleMongoException(exception);
-    } else if (exception['name'] === 'JsonWebTokenError') {
+    } else if (
+      ['JsonWebTokenError', 'TokenExpiredError'].includes(exception['name'])
+    ) {
       // Get Request
       const req = host.switchToHttp().getRequest<Request>();
 
@@ -77,7 +79,10 @@ export class ExceptionFilter implements ExceptionFilter {
 
   //#region Handle JWT Error
   private handleJWTException(exception: any, req: Request): ExceptionErrorBody {
-    if (req.url.includes('forget-password/verify')) {
+    if (
+      req.url.includes('forget-password/verify') ||
+      req.url.includes('set-password')
+    ) {
       return {
         message: 'Invalid link',
         statusCode: HttpStatus.BAD_REQUEST,
