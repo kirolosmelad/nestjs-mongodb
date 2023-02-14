@@ -106,20 +106,29 @@ export class AuthService {
   //#region Get Forget Password Token
   async getForgetPasswordToken(
     getForgetPasswordTokenDto: GetForgetPasswordTokenDto,
-  ) {
+  ): Promise<{ user: UserDocument; emailLink: string }> {
     // Check User Existence
-    const user = await this.checkUserExistence({
+    let user = await this.checkUserExistence({
       email: getForgetPasswordTokenDto.email,
     });
     if (!user)
-      throw new BadRequestException('Wrong email , please signup first');
+      throw new BadRequestException('Wrong email ,Please signup first');
+    if (!user.isEmailVerified)
+      throw new BadRequestException('Please verify your email first');
 
     // Update Set Password Token
     user.setPasswordToken = this.generateSetPasswordToken(user.id);
 
-    // TODO : Send Email With token
+    // Save User
+    user = await user.save();
 
-    return user.save();
+    //  Send Email With token
+    const emailLink = await this.emailsService.sendResetPasswordEmail({
+      email: user.email,
+      token: user.setPasswordToken,
+    });
+
+    return { user, emailLink };
   }
   //#endregion
 

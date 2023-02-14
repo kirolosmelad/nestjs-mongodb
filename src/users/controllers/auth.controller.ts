@@ -7,13 +7,17 @@ import {
   Inject,
   Param,
   Post,
+  Res,
 } from '@nestjs/common';
 import {
   GetUser,
   JWTPayload,
   Public,
   SkipEmailVerification,
+  successHTML,
+  failureHTML,
 } from '@app/shared';
+import { Response } from 'express';
 import { AuthService } from '../services/auth.service';
 import { RegisterDto } from '../dto/register.dto';
 import { LoginDto } from '../dto/login.dto';
@@ -96,10 +100,13 @@ export class AuthController {
   async forgetPasswordToken(
     @Body() getForgetPasswordTokenDto: GetForgetPasswordTokenDto,
   ) {
-    await this.authService.getForgetPasswordToken(getForgetPasswordTokenDto);
+    const { emailLink } = await this.authService.getForgetPasswordToken(
+      getForgetPasswordTokenDto,
+    );
 
     return {
       message: `Reset password link has been sent to your email`,
+      emailLink,
     };
   }
   //#endregion
@@ -107,12 +114,17 @@ export class AuthController {
   //#region Verify Set Password token
   @Public()
   @Get('/forget-password/verify/:token')
-  async verifySetPasswordToken(@Param('token') token: string) {
-    await this.authService.verifySetPasswordToken(token);
+  async verifySetPasswordToken(
+    @Param('token') token: string,
+    @Res() res: Response,
+  ) {
+    try {
+      await this.authService.verifySetPasswordToken(token);
 
-    return {
-      isValid: true,
-    };
+      return res.send(successHTML);
+    } catch (err) {
+      return res.send(failureHTML);
+    }
   }
   //#endregion
 

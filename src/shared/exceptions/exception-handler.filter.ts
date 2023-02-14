@@ -38,7 +38,8 @@ export class ExceptionFilter implements ExceptionFilter {
       exceptionReponse = this.handleJWTException(exception, req);
     }
 
-    console.log(exception);
+    if (exceptionReponse.message === 'Unable to perform this action')
+      console.log(exception);
 
     return this.sendErrorBackToClient(exceptionReponse, res);
   }

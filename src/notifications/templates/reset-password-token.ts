@@ -1,3 +1,6 @@
+export const getChangePasswordEmailSubject =
+  'Forget your password , it happens!';
+
 export const getChangePasswordTemplate = (link: string) => {
   return `<!DOCTYPE html>
     <html>
