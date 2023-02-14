@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { SendVerificationEmailDto } from '../dto/send-verification-email.dto';
 import { MailerService } from '@nestjs-modules/mailer';
 import { ConfigService } from '@nestjs/config';
+import { SendVerificationEmailDto } from '../dto/send-verification-email.dto';
 import {
   getChangePasswordEmailSubject,
   getChangePasswordTemplate,

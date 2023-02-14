@@ -10,9 +10,9 @@ import {
   Patch,
   Post,
 } from '@nestjs/common';
+import { GetUser, JWTPayload, PraseObjectIdPipe } from '@app/shared';
 import { AddressesService } from '../services/addresses.service';
 import { CreateAddressDto } from '../dto/create-address.dto';
-import { GetUser, JWTPayload, PraseObjectIdPipe } from '@app/shared';
 import { AddressDocument } from '../entities/address.entity';
 import { UpdateAddressDto } from '../dto/update-address.dto';
 

@@ -1,9 +1,9 @@
+import { ClientSession, Model } from 'mongoose';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Address, AddressDocument } from '../entities/address.entity';
-import { ClientSession, Model } from 'mongoose';
-import { CreateAddressDto } from '../dto/create-address.dto';
 import { User, UserDocument } from '@app/shared';
+import { Address, AddressDocument } from '../entities/address.entity';
+import { CreateAddressDto } from '../dto/create-address.dto';
 import { UpdateAddressDto } from '../dto/update-address.dto';
 
 @Injectable()

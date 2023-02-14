@@ -1,9 +1,9 @@
-import { JWTPayload, User, UserDocument } from '@app/shared';
+import { Connection, Model } from 'mongoose';
+import { InjectConnection, InjectModel } from '@nestjs/mongoose';
 import { Inject, Injectable } from '@nestjs/common';
+import { JWTPayload, User, UserDocument } from '@app/shared';
 import { UpdateProfileDto } from '../dto/update-profile.dto';
 import { AuthService } from './auth.service';
-import { InjectConnection, InjectModel } from '@nestjs/mongoose';
-import { Connection, Model } from 'mongoose';
 import { EmailsService } from '../../notifications/services/emails.service';
 import { AddressesService } from '../../addresses/services/addresses.service';
 
