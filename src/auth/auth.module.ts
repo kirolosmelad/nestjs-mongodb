@@ -6,6 +6,8 @@ import { AuthService } from './services/auth.service';
 import { AuthController } from './controllers/auth.controller';
 import { JWTStrategy } from './strategies/jwt.strategy';
 import { AuthorizationGuard } from './guards/authorization.guard';
+import { AccountController } from './controllers/account.controller';
+import { AccountService } from './services/account.service';
 
 @Module({
   imports: [
@@ -17,8 +19,8 @@ import { AuthorizationGuard } from './guards/authorization.guard';
     }),
     SharedModule,
   ],
-  providers: [AuthService, JWTStrategy, AuthorizationGuard],
-  controllers: [AuthController],
+  providers: [AuthService, JWTStrategy, AuthorizationGuard, AccountService],
+  controllers: [AuthController, AccountController],
   exports: [AuthorizationGuard, AuthService],
 })
 export class AuthModule {}
