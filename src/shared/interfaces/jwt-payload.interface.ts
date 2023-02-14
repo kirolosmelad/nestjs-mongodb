@@ -4,4 +4,5 @@ export interface JWTPayload {
   lastName: string;
   email: string;
   verificationCode?: string;
+  isEmailVerified?: boolean;
 }

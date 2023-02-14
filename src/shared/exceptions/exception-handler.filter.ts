@@ -1,11 +1,11 @@
+import { Request, Response } from 'express';
+import { MongoError } from 'mongodb';
 import {
   ArgumentsHost,
   Catch,
   HttpException,
   HttpStatus,
 } from '@nestjs/common';
-import { Request, Response } from 'express';
-import { MongoError } from 'mongodb';
 
 interface ExceptionErrorBody {
   message: string | string[];

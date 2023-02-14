@@ -1,3 +1,5 @@
+import * as bcrypt from 'bcrypt';
+import { FilterQuery, Model } from 'mongoose';
 import {
   BadRequestException,
   Inject,
@@ -5,11 +7,8 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { JWTPayload, SetNewPasswordDto } from '@app/shared';
-import * as bcrypt from 'bcrypt';
-import { FilterQuery, Model } from 'mongoose';
 import { JwtService } from '@nestjs/jwt';
-import { User, UserDocument } from '@app/shared';
+import { JWTPayload, SetNewPasswordDto, User, UserDocument } from '@app/shared';
 import { RegisterDto } from '../dto/register.dto';
 import { LoginDto } from '../dto/login.dto';
 import { GetForgetPasswordTokenDto } from '../dto/get-forget-password-token';

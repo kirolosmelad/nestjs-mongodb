@@ -5,7 +5,7 @@ import { ConfigValidationSchema } from './config.schema';
 import { AuthModule } from './auth/auth.module';
 import { APP_FILTER, APP_GUARD, APP_PIPE } from '@nestjs/core';
 import { ExceptionFilter, SharedModule } from '@app/shared';
-import { AuthorizationGuard } from './auth/guards';
+import { AuthorizationGuard } from './auth/guards/authorization.guard';
 
 @Module({
   imports: [

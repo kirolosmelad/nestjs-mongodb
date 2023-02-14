@@ -44,8 +44,9 @@ export class AuthorizationGuard
     const user = await this.authService.checkUserExistence({ id: payload.id });
     if (!user) throw new UnauthorizedException();
 
-    // Add Some data to our payload
+    // Inject User Data in paylod
     payload.verificationCode = user.verificationCode;
+    payload.isEmailVerified = user.isEmailVerified;
 
     const skipEmailVerification = this.reflector.getAllAndOverride<boolean>(
       SKIP_EMAIL_VERIFICATION,
