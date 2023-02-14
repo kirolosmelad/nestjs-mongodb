@@ -1,11 +1,10 @@
-import { JWTPayload } from '@app/shared';
+import { JWTPayload, User, UserDocument } from '@app/shared';
 import { Inject, Injectable } from '@nestjs/common';
 import { UpdateProfileDto } from '../dto/update-profile.dto';
 import { AuthService } from './auth.service';
 import { InjectModel } from '@nestjs/mongoose';
-import { User, UserDocument } from '../entities';
 import { Model } from 'mongoose';
-import { EmailsService } from 'src/notifications/services/emails.service';
+import { EmailsService } from '../../notifications/services/emails.service';
 
 @Injectable()
 export class AccountService {

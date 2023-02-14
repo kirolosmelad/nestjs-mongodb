@@ -4,9 +4,10 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigValidationSchema } from './config.schema';
 import { UsersModule } from './users/users.module';
 import { APP_FILTER, APP_GUARD, APP_PIPE } from '@nestjs/core';
-import { ExceptionFilter, SharedModule } from '@app/shared';
+import { ExceptionFilter } from '@app/shared';
 import { AuthorizationGuard } from './users/guards/authorization.guard';
 import { NotificationsModule } from './notifications/notifications.module';
+import { AddressesModule } from './addresses/addresses.module';
 
 @Module({
   imports: [
@@ -25,8 +26,8 @@ import { NotificationsModule } from './notifications/notifications.module';
       }),
     }),
     UsersModule,
-    SharedModule,
     NotificationsModule,
+    AddressesModule,
   ],
   controllers: [],
   providers: [

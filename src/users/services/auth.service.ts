@@ -8,13 +8,12 @@ import {
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { JwtService } from '@nestjs/jwt';
-import { JWTPayload } from '@app/shared';
+import { JWTPayload, User, UserDocument } from '@app/shared';
 import { RegisterDto } from '../dto/register.dto';
 import { LoginDto } from '../dto/login.dto';
 import { GetForgetPasswordTokenDto } from '../dto/get-forget-password-token';
-import { User, UserDocument } from '../entities';
 import { SetNewPasswordDto } from '../dto/set-new-password.dto';
-import { EmailsService } from 'src/notifications/services/emails.service';
+import { EmailsService } from '../../notifications/services/emails.service';
 
 @Injectable()
 export class AuthService {
